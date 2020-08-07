@@ -23,6 +23,9 @@ Fruit.find((err, fruit) => {
   if (err) {
     console.log(err)
   } else {
-    console.log(fruit)
+    fruit.forEach((a) => {
+      console.log(a.nama)
+    })
+    // console.log(fruit)
   }
 })
