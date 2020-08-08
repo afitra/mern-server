@@ -19,13 +19,18 @@ const Fruit = mongoose.model("Fruit", fruitSchema)
 //     console.log(err)
 //   })
 
-Fruit.find((err, fruit) => {
-  if (err) {
-    console.log(err)
-  } else {
-    fruit.forEach((a) => {
-      console.log(a.nama)
+module.exports = {
+  read: () => {
+    console.log("masokkkk")
+    return Fruit.find((err, fruit) => {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log(fruit)
+        return fruit
+      }
     })
-    // console.log(fruit)
-  }
-})
+  },
+}
+
+read()

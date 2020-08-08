@@ -14,7 +14,15 @@ const fruitSchema = new mongoose.Schema({
     min: 1,
     max: [5, " 1 - 5 om "],
   },
-  review: String,
+  review: {
+    type: String,
+    enum: ["bagus", "jelek", ""],
+    required: () => {
+      console.log(">>>", this.rating, "<<<", this.fruitSchema)
+      console.log(this.rating < 3)
+      return this.rating > 3
+    },
+  },
 })
 const Fruit = mongoose.model("Fruit", fruitSchema)
 const apple = new Fruit({
@@ -24,8 +32,8 @@ const apple = new Fruit({
 })
 const apples = new Fruit({
   nama: "apples",
-  rating: 10,
-  review: "bagus",
+  rating: 5,
+  review: "",
 })
 
 apples.save((err) => {
