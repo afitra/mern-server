@@ -2,7 +2,7 @@ const { route } = require(".")
 
 const router = require("express").Router()
 const adminController = require("../controllers/adminController")
-
+const { upload } = require("../middlewares/multer")
 //// =======   END POINT CATEGORY
 router.get("/dashboard", adminController.viewDashboard)
 router.get("/category", adminController.viewCategory)
@@ -12,6 +12,11 @@ router.delete("/category/:id", adminController.deleteCategory)
 
 // =======  end point bank
 router.get("/bank", adminController.viewBank)
+router.post("/bank", upload, adminController.addBank)
+router.put("/bank", upload, adminController.editBank)
+router.delete("/bank/:id", upload, adminController.deleteBank)
+
+//
 router.get("/item", adminController.viewItem)
 router.get("/booking", adminController.viewBooking)
 

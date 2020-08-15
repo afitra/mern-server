@@ -1,0 +1,12 @@
+kategori punya banyak item 
+satu item punya satu kategori
+kategori - item => one to many
+
+
+satu item punya banyak fitur
+satu fitur punya satu item
+item - fitur => one to many
+
+satu item pumya banyak aktivity
+satu aktivity pumya satu item
+item - aktivity => one to many
