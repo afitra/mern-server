@@ -1,7 +1,9 @@
-const Category = require("../models/Category")
-const Bank = require("../models/Bank")
-const fs = require("fs-extra")
-const path = require("path")
+const Category = require("../models/Category"),
+  Bank = require("../models/Bank"),
+  Item = require("../models/Item"),
+  Image = require("../models/Image"),
+  fs = require("fs-extra"),
+  path = require("path")
 module.exports = {
   viewDashboard: (req, res) => {
     res.render("admin/dashboard/view_dashboard", {
@@ -157,11 +159,40 @@ module.exports = {
     //
   },
 
-  viewItem: (req, res) => {
-    res.render("admin/item/view_item", {
-      title: "AMB|Item",
-    })
+  viewItem: async (req, res) => {
+    try {
+      const category = await Category.find()
+
+      res.render("admin/item/view_item", {
+        title: "AMB|Item",
+        category,
+      })
+    } catch (err) {
+      req.flash("alertMessage", `${err.message}`)
+      req.flash("alertStatus", "danger")
+      res.redirect("/admin/bank")
+    }
   },
+
+  addItem: async (req, res) => {
+    //
+    const { categoryId, title, price, city, about } = req.body
+    if (req.files.length > 0) {
+      const category = await Category.findOne({ _id: categoryId })
+
+      const newItem = {
+        categoryId: Category._id,
+        title,
+        description: about,
+        price,
+        city,
+      }
+      const item = await Item.create(newItem)
+    } else {
+      //
+    }
+  },
+
   viewBooking: (req, res) => {
     res.render("admin/booking/view_booking", {
       title: "AMB|Booking",
