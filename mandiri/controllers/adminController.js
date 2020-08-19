@@ -4,6 +4,7 @@ const Category = require("../models/Category"),
   Image = require("../models/Image"),
   fs = require("fs-extra"),
   path = require("path")
+const e = require("express")
 module.exports = {
   viewDashboard: (req, res) => {
     res.render("admin/dashboard/view_dashboard", {
@@ -162,10 +163,13 @@ module.exports = {
   viewItem: async (req, res) => {
     try {
       const category = await Category.find()
-
+      const alertStatus = req.flash("alertStatus")
+      const alertMessage = req.flash("alertMessage")
+      const alert = { message: alertMessage, status: alertStatus }
       res.render("admin/item/view_item", {
         title: "AMB|Item",
         category,
+        alert,
       })
     } catch (err) {
       req.flash("alertMessage", `${err.message}`)
@@ -176,20 +180,44 @@ module.exports = {
 
   addItem: async (req, res) => {
     //
-    const { categoryId, title, price, city, about } = req.body
-    if (req.files.length > 0) {
-      const category = await Category.findOne({ _id: categoryId })
 
-      const newItem = {
-        categoryId: Category._id,
-        title,
-        description: about,
-        price,
-        city,
+    try {
+      const { categoryId, title, price, city, about } = req.body
+      if (req.files.length > 0) {
+        const category = await Category.findOne({ _id: categoryId })
+
+        const newItem = {
+          categoryId: category._id,
+          title,
+          description: about,
+          price,
+          city,
+        }
+        const item = await Item.create(newItem)
+        category.itemId.push({
+          _id: item.id,
+        })
+        await category.save()
+        for (let i = 0; i < req.files.length; i++) {
+          // const element = req.files[i]
+          const imageSave = await Image.create({
+            imageUrl: `images/${req.files[i].filename}`,
+          })
+
+          item.imageId.push({
+            _id: imageSave._id,
+          })
+          await item.save()
+        }
+
+        req.flash("alertMessage", "Succes add Item")
+        req.flash("alertStatus", "success")
+        res.redirect("/admin/item")
       }
-      const item = await Item.create(newItem)
-    } else {
-      //
+    } catch (err) {
+      req.flash("alertMessage", `${err.message}`)
+      req.flash("alertStatus", "danger")
+      res.redirect("/admin/bank")
     }
   },
 
