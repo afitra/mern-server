@@ -8,7 +8,7 @@ const e = require("express")
 module.exports = {
   viewDashboard: (req, res) => {
     res.render("admin/dashboard/view_dashboard", {
-      title: "AMB|Category",
+      title: "AMB | Category",
     })
   },
   viewCategory: async (req, res) => {
@@ -20,7 +20,7 @@ module.exports = {
       res.render("admin/category/view_category", {
         category,
         alert,
-        title: "AMB|Category",
+        title: "AMB | Category",
       })
     } catch {
       req.flash("alertMessage", `${err.message}`)
@@ -80,7 +80,7 @@ module.exports = {
       const alert = { message: alertMessage, status: alertStatus }
 
       res.render("admin/bank/view_bank", {
-        title: "AMB|Bank",
+        title: "AMB | Bank",
         bank,
         alert,
       })
@@ -162,19 +162,31 @@ module.exports = {
 
   viewItem: async (req, res) => {
     try {
+      const item = await Item.find()
+        .populate({
+          path: "imageId",
+          select: " id imageUrl",
+        })
+        .populate({
+          path: "categoryId",
+          select: " id name",
+        })
+
       const category = await Category.find()
       const alertStatus = req.flash("alertStatus")
       const alertMessage = req.flash("alertMessage")
       const alert = { message: alertMessage, status: alertStatus }
       res.render("admin/item/view_item", {
-        title: "AMB|Item",
+        title: "AMB | Item",
         category,
         alert,
+        item,
+        action: "view",
       })
     } catch (err) {
       req.flash("alertMessage", `${err.message}`)
       req.flash("alertStatus", "danger")
-      res.redirect("/admin/bank")
+      res.redirect("/admin/item")
     }
   },
 
@@ -221,9 +233,113 @@ module.exports = {
     }
   },
 
+  showImageItem: async (req, res) => {
+    try {
+      const id = req.params.id,
+        item = await Item.findOne({
+          _id: id,
+        }).populate({
+          path: "imageId",
+          select: " id imageUrl",
+        })
+
+      const category = await Category.find()
+      const alertStatus = req.flash("alertStatus")
+      const alertMessage = req.flash("alertMessage")
+      const alert = { message: alertMessage, status: alertStatus }
+      res.render("admin/item/view_item", {
+        title: "AMB | Item",
+        category,
+        alert,
+        item,
+        action: "show image",
+      })
+    } catch (err) {
+      req.flash("alertMessage", `${err.message}`)
+      req.flash("alertStatus", "danger")
+      res.redirect("/admin/item")
+    }
+  },
+  showEditItem: async (req, res) => {
+    try {
+      const id = req.params.id,
+        item = await Item.findOne({
+          _id: id,
+        })
+          .populate({
+            path: "imageId",
+            select: " id imageUrl",
+          })
+          .populate({ path: "categoryId", select: "id name" })
+
+      const category = await Category.find()
+      const alertStatus = req.flash("alertStatus")
+      const alertMessage = req.flash("alertMessage")
+      const alert = { message: alertMessage, status: alertStatus }
+
+      res.render("admin/item/view_item", {
+        title: "AMB | Item",
+        category,
+        alert,
+        item,
+        action: "edit",
+      })
+    } catch (err) {
+      req.flash("alertMessage", `${err.message}`)
+      req.flash("alertStatus", "danger")
+      res.redirect("/admin/item")
+    }
+  },
+
+  editItem: async (req, res) => {
+    try {
+      const { id } = req.params,
+        { categoryId, title, price, city, about } = req.body,
+        item = await Item.findOne({ _id: id })
+          .populate({ path: "imageId", select: "id imegeUrl" })
+          .populate({ path: "categoryId", select: "id name" })
+      console.log(item)
+      if (req.files.length > 0) {
+        for (let i = 0; i < item.imageId.length; i++) {
+          var el = item.imageId[i]._id
+          console.log(">>>>>>", el)
+          imageUpdate = await Image.findOne({ _id: el })
+          console.log("<<<<<", imageUpdate)
+          await fs.unlink(path.join(`public/${imageUpdate.imageUrl}`))
+          imageUpdate.imageUrl = `images/${req.files[i].filename}`
+          await imageUpdate.save()
+        }
+
+        item.title = title
+        item.price = price
+        item.city = city
+        item.description = about
+        item.categoryId = categoryId
+        await item.save()
+        req.flash("alertMessage", "Succes update Item")
+        req.flash("alertStatus", "success")
+        res.redirect("/admin/item")
+      } else {
+        item.title = title
+        item.price = price
+        item.city = city
+        item.description = about
+        item.categoryId = categoryId
+        await item.save()
+        req.flash("alertMessage", "Succes update Item")
+        req.flash("alertStatus", "success")
+        res.redirect("/admin/item")
+      }
+    } catch (err) {
+      req.flash("alertMessage", `${err.message}`)
+      req.flash("alertStatus", "danger")
+      res.redirect("/admin/item")
+    }
+  },
+
   viewBooking: (req, res) => {
     res.render("admin/booking/view_booking", {
-      title: "AMB|Booking",
+      title: "AMB | Booking",
     })
   },
 }
