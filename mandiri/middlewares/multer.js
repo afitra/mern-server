@@ -1,6 +1,7 @@
 const multer = require("multer")
 const path = require("path")
 const fs = require("fs")
+require("dotenv").config()
 // import uuid from "uuid/v4";
 
 const storageMultiple = multer.diskStorage({
@@ -18,7 +19,7 @@ const storageMultiple = multer.diskStorage({
 
 const uploadMultiple = multer({
   storage: storageMultiple,
-  // limits: { fileSize: 1000000 },
+  limits: { fileSize: Number(process.env.MAXSIZEFILE) },
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb)
   },
@@ -34,7 +35,7 @@ const storage = multer.diskStorage({
 
 const uploadSingle = multer({
   storage: storage,
-  limits: { fileSize: 1000000 },
+  limits: { fileSize: Number(process.env.MAXSIZEFILE) },
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb)
   },
