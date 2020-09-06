@@ -28,7 +28,7 @@
               role="tab"
               aria-controls="home"
               aria-selected="true"
-              >Show Features</a
+              >Show Feature</a
             >
           </li>
           <li class="nav-item">
@@ -36,19 +36,16 @@
               class="nav-link"
               id="profile-tab"
               data-toggle="tab"
-              href="#add-activity"
+              href="#show-activity"
               role="tab"
               aria-controls="profile"
               aria-selected="false"
-              >Show Activity
-            </a>
+              >Show Activity</a
+            >
           </li>
         </ul>
         <div class="tab-content" id="myTabContent">
-          <!--  -->
-          <%- include('show_feature') %>
-          <!--  -->
-          <%- include('show_activity') %>
+          <%- include('show_feature.ejs') %> <%- include('show_activity.ejs') %>
         </div>
       </div>
       <!-- /.container-fluid -->
@@ -100,11 +97,30 @@
     </div>
   </div>
 </div>
-
-<%- include('../../../partials/js.ejs') %>
+<%- include('show_modal_activity.ejs') %> <%- include('show_modal_feature.ejs')
+%> <%- include('../../../partials/js.ejs') %>
 <script>
   $(document).ready(function () {
-    $("#dataTableActivity").dataTable()
+    $("#dataTableActivity").DataTable()
   })
   CKEDITOR.replace("about")
+  $("#dataTableActivity").on("click", ".button-update", function () {
+    let id = $(this).data("id")
+    let name = $(this).data("name")
+    let type = $(this).data("type")
+    $("#edit-modal-activity").modal("show")
+    $(".id").val(id)
+    $(".name").val(name)
+    $(".type").val(type)
+  })
+
+  $("#dataTable").on("click", ".button-update", function () {
+    let id = $(this).data("id")
+    let name = $(this).data("name")
+    let qty = $(this).data("qty")
+    $("#edit-modal-feature").modal("show")
+    $(".id").val(id)
+    $(".name").val(name)
+    $(".qty").val(qty)
+  })
 </script>
