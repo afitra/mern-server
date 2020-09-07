@@ -6,6 +6,7 @@ var logger = require("morgan")
 var indexRouter = require("./routes/index")
 var usersRouter = require("./routes/users")
 var adminRouter = require("./routes/admin")
+var apiRouter = require("./routes/api")
 require("dotenv").config()
 var app = express()
 const methodOverride = require("method-override")
@@ -38,7 +39,7 @@ app.use("/", indexRouter)
 app.use("/users", usersRouter)
 // admin
 
-// app.use('/api/v1/member', apiRouter);
+app.use("/api/v1/member", apiRouter)
 
 //router
 
