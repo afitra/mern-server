@@ -1,2 +1,0 @@
-# mern-server
-mongose 
