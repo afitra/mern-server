@@ -94,7 +94,7 @@ module.exports = {
         title: "AMB | Category",
         user: req.session.user,
       })
-    } catch {
+    } catch (err) {
       req.flash("alertMessage", `${err.message}`)
       req.flash("alertStatus", "danger")
       res.redirect("/admin/category")
