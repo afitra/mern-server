@@ -3,7 +3,7 @@ var mongoose = require("mongoose")
 
 // Connect to MongoDB via Mongoose
 seeder.connect(
-  "mongodb://localhost:27017/mern",
+  "mongodb+srv://backEnd:backEnd@doglas-vympo.mongodb.net/mern?retryWrites=true&w=majority",
   {
     useNewUrlParser: true,
     useCreateIndex: true,
