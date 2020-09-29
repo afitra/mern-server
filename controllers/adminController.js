@@ -329,7 +329,7 @@ module.exports = {
         item,
         action: "show image",
         host: process.env.HOST,
-        // user: req.session.user,
+        user: req.session.user,
       })
     } catch (err) {
       req.flash("alertMessage", `${err.message}`)

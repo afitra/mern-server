@@ -1,9 +1,16 @@
 var seeder = require("mongoose-seed")
 var mongoose = require("mongoose")
-
+require("dotenv").config()
+var dbUrl = null
+if (process.env.ONLINE == "true") {
+  dbUrl = process.env.MONGO_SERVER_ON
+} else {
+  dbUrl = process.env.MONGO_SERVER_OFF
+}
+console.log(dbUrl)
 // Connect to MongoDB via Mongoose
 seeder.connect(
-  "mongodb+srv://backEnd:backEnd@doglas-vympo.mongodb.net/mern?retryWrites=true&w=majority",
+  dbUrl,
   {
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -518,14 +525,14 @@ var data = [
         nameBank: "Mandiri",
         nomorRekening: "089898",
         name: "elfin",
-        imageUrl: "images/9999999999.png",
+        imageUrl: "images/logo mandiri.png",
       },
       {
         _id: mongoose.Types.ObjectId("5e96cbe292b97300fc903323"),
         nameBank: "BCA",
         nomorRekening: "878678",
         name: "elfin",
-        imageUrl: "images/9999999999.png",
+        imageUrl: "images/logo bca.png",
       },
     ],
   },

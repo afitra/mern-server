@@ -3,6 +3,7 @@ var express = require("express")
 var path = require("path")
 var cookieParser = require("cookie-parser")
 var logger = require("morgan")
+var cors = require("cors")
 var indexRouter = require("./routes/index")
 var usersRouter = require("./routes/users")
 var adminRouter = require("./routes/admin")
@@ -25,6 +26,8 @@ app.use(
     cookie: { maxAge: 60000 },
   })
 )
+
+app.use(cors())
 app.use(flash())
 app.use(logger("dev"))
 app.use(express.json())
@@ -51,7 +54,14 @@ app.use(function (req, res, next) {
 
 const mongoose = require("mongoose")
 
-mongoose.connect(process.env.MONGO_SERVER, {
+var dbUrl = null
+if (process.env.ONLINE == "true") {
+  dbUrl = process.env.MONGO_SERVER_ON
+} else {
+  dbUrl = process.env.MONGO_SERVER_OFF
+}
+
+mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
