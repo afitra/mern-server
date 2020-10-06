@@ -381,7 +381,7 @@ module.exports = {
         for (let i = 0; i < item.imageId.length; i++) {
           var el = item.imageId[i]._id
 
-          imageUpdate = await Image.findOne({ _id: el })
+         let  imageUpdate = await Image.findOne({ _id: el })
 
           await fs.unlink(path.join(`public/${imageUpdate.imageUrl}`))
           imageUpdate.imageUrl = `images/${req.files[i].filename}`
